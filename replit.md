@@ -89,6 +89,8 @@ The application is designed for easy deployment on Replit:
 ```
 Changelog:
 - July 03, 2025. Initial setup
+- July 03, 2025. Fixed time period analysis bug showing minutes instead of days
+- July 03, 2025. Made OpenSky Network the default data source due to AviationStack limitations
 ```
 
 ## User Preferences

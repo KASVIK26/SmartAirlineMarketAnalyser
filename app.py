@@ -104,19 +104,26 @@ def main():
         
         # Data source selection with enhanced descriptions
         data_source_options = {
-            "AviationStack": "🔥 AviationStack (Premium) - Detailed flight schedules & airline data",
-            "OpenSky Network": "🌐 OpenSky Network (Free) - Real-time flight positions"
+            "OpenSky Network": "🌐 OpenSky Network (Free) - Real-time flight positions",
+            "AviationStack": "🔥 AviationStack (Premium) - Detailed flight schedules & airline data"
         }
         
         selected_display = st.selectbox(
             "🔗 Select Data Source",
             list(data_source_options.values()),
-            index=0,  # Default to AviationStack since we have the API key
+            index=0,  # Default to OpenSky Network for better reliability
             help="Choose your preferred aviation data source"
         )
         
         # Get the actual data source name
         data_source = [k for k, v in data_source_options.items() if v == selected_display][0]
+        
+        # Show warning for AviationStack
+        if data_source == "AviationStack":
+            st.warning(
+                "⚠️ **AviationStack Note:** This API has limited historical data availability. "
+                "If you get 'No flight data found', try switching to OpenSky Network for better results."
+            )
         
         # Geographic filters
         st.subheader("📍 Geographic Filters")
@@ -190,8 +197,8 @@ def main():
         st.subheader("ℹ️ Quick Info")
         st.info(
             "**Available Data Sources:**\n"
-            "• AviationStack: Detailed flight schedules & airline info\n"
-            "• OpenSky Network: Real-time global flight positions\n\n"
+            "• OpenSky Network: Real-time global flight positions (Recommended)\n"
+            "• AviationStack: Detailed flight schedules (Limited historical data)\n\n"
             "**Time Period Analysis:**\n"
             "• Current flight data is distributed across selected timeframe\n"
             "• Provides realistic market analysis patterns\n\n"
