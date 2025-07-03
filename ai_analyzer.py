@@ -10,7 +10,16 @@ class AIAnalyzer:
     """Handles AI-powered analysis of flight data using Google Gemini"""
     
     def __init__(self):
-        self.gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
+        # Try to get API key from Streamlit secrets first, then environment variables
+        self.gemini_api_key = ""
+        
+        # Check Streamlit secrets (for cloud deployment)
+        if hasattr(st, 'secrets') and 'GEMINI_API_KEY' in st.secrets:
+            self.gemini_api_key = st.secrets["GEMINI_API_KEY"]
+        # Fallback to environment variables (for local development)
+        elif "GEMINI_API_KEY" in os.environ:
+            self.gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
+        
         if self.gemini_api_key:
             self.client = genai.Client(api_key=self.gemini_api_key)
         else:
