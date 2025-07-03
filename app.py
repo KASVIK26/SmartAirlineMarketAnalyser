@@ -84,7 +84,7 @@ def main():
         st.subheader("📡 System Status")
         api_status = validate_api_keys()
         
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
             if api_status.get("Gemini"):
                 st.markdown('<span class="status-indicator status-online"></span>Gemini AI', unsafe_allow_html=True)
@@ -93,15 +93,30 @@ def main():
         
         with col2:
             st.markdown('<span class="status-indicator status-online"></span>OpenSky API', unsafe_allow_html=True)
+            
+        with col3:
+            if api_status.get("AviationStack"):
+                st.markdown('<span class="status-indicator status-online"></span>AviationStack', unsafe_allow_html=True)
+            else:
+                st.markdown('<span class="status-indicator status-offline"></span>AviationStack', unsafe_allow_html=True)
         
         st.markdown("---")
         
-        # Data source selection
-        data_source = st.selectbox(
+        # Data source selection with enhanced descriptions
+        data_source_options = {
+            "AviationStack": "🔥 AviationStack (Premium) - Detailed flight schedules & airline data",
+            "OpenSky Network": "🌐 OpenSky Network (Free) - Real-time flight positions"
+        }
+        
+        selected_display = st.selectbox(
             "🔗 Select Data Source",
-            ["OpenSky Network", "AviationStack"],
+            list(data_source_options.values()),
+            index=0,  # Default to AviationStack since we have the API key
             help="Choose your preferred aviation data source"
         )
+        
+        # Get the actual data source name
+        data_source = [k for k, v in data_source_options.items() if v == selected_display][0]
         
         # Geographic filters
         st.subheader("📍 Geographic Filters")
@@ -174,13 +189,14 @@ def main():
         st.markdown("---")
         st.subheader("ℹ️ Quick Info")
         st.info(
-            "**Free Data Sources:**\n"
-            "• OpenSky Network: Real-time global flight data\n"
-            "• AviationStack: Commercial flight schedules\n\n"
+            "**Available Data Sources:**\n"
+            "• AviationStack: Detailed flight schedules & airline info\n"
+            "• OpenSky Network: Real-time global flight positions\n\n"
             "**Gemini AI Analysis provides:**\n"
             "• Market trend insights\n"
             "• Route popularity analysis\n"
-            "• Business recommendations"
+            "• Peak hour analysis\n"
+            "• Business recommendations for hostels"
         )
     
     # Main content area with enhanced layout
@@ -226,7 +242,7 @@ def main():
             st.markdown("""
             <div class="metric-card">
                 <h4>🤖 AI Analysis</h4>
-                <p>Get intelligent insights and business recommendations</p>
+                <p>Gemini AI provides intelligent insights and recommendations</p>
             </div>
             """, unsafe_allow_html=True)
         
