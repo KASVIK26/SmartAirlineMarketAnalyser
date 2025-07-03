@@ -8,13 +8,32 @@ from data_fetcher import DataFetcher
 from ai_analyzer import AIAnalyzer
 from utils import format_currency, cache_data, get_country_code, validate_api_keys
 
-# Configure page
+# Configure page with maximum width utilization
 st.set_page_config(
     page_title="Airline Market Demand Analytics",
     page_icon="✈️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Custom CSS to maximize width usage
+st.markdown("""
+<style>
+    .main .block-container {
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .stMetric {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        margin: 0.25rem 0;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Initialize session state
 if 'data_fetcher' not in st.session_state:
@@ -225,19 +244,17 @@ def main():
         st.subheader("📊 Market Demand Overview")
         display_data_overview()
         
-        # Two-column layout for charts and insights
-        col1, col2 = st.columns([2, 1])
+        # Enhanced layout with better space utilization
+        st.subheader("📈 Data Visualizations")
+        display_visualizations()
         
-        with col1:
-            st.subheader("📈 Data Visualizations")
-            display_visualizations()
-        
-        with col2:
+        # AI Insights in full width below visualizations
+        if hasattr(st.session_state, 'analysis_results') and st.session_state.analysis_results is not None:
+            st.markdown("---")
             st.subheader("🤖 AI Insights")
-            if hasattr(st.session_state, 'analysis_results') and st.session_state.analysis_results is not None:
-                display_ai_insights()
-            else:
-                st.info("AI insights will appear here after data analysis.")
+            display_ai_insights()
+        else:
+            st.info("AI insights will appear here after data analysis.")
     else:
         # Welcome section with improved styling
         st.markdown("""
@@ -413,8 +430,11 @@ def display_data_overview():
     
     data = st.session_state.flight_data
     
-    # Key metrics with enhanced styling
+    # Key metrics with enhanced styling - using wider layout
     col1, col2, col3, col4 = st.columns(4)
+    
+    # Additional metrics row for better space utilization
+    metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
     
     with col1:
         total_flights = len(data)
@@ -443,26 +463,35 @@ def display_data_overview():
         else:
             st.metric("Data Points", len(data))
     
-    # Additional metrics row
-    if 'timestamp' in data.columns:
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
+    # Use the second row of metrics for additional insights
+    with metric_col1:
+        if 'timestamp' in data.columns:
             date_range = (data['timestamp'].max() - data['timestamp'].min()).days
             st.metric("Date Range", f"{date_range} days")
-        
-        with col2:
+        else:
+            st.metric("Status", "Active")
+    
+    with metric_col2:
+        if 'timestamp' in data.columns:
+            date_range = (data['timestamp'].max() - data['timestamp'].min()).days
             avg_per_day = len(data) / max(1, date_range)
             st.metric("Avg Daily Flights", f"{avg_per_day:.1f}")
-        
-        with col3:
+        else:
+            st.metric("Data Quality", "Good")
+    
+    with metric_col3:
+        if 'timestamp' in data.columns:
             peak_hour = data['timestamp'].dt.hour.mode().iloc[0] if not data['timestamp'].dt.hour.empty else 0
             st.metric("Peak Hour", f"{peak_hour}:00")
-        
-        with col4:
-            if 'velocity' in data.columns:
-                avg_speed = data['velocity'].mean() * 2.237 if data['velocity'].notna().any() else 0
-                st.metric("Avg Speed", f"{avg_speed:.0f} mph")
+        else:
+            st.metric("Analysis", "Complete")
+    
+    with metric_col4:
+        if 'velocity' in data.columns:
+            avg_speed = data['velocity'].mean() * 2.237 if data['velocity'].notna().any() else 0
+            st.metric("Avg Speed", f"{avg_speed:.0f} mph")
+        else:
+            st.metric("Processing", "Done")
 
 def display_visualizations():
     """Display interactive visualizations"""
@@ -490,41 +519,46 @@ def display_visualizations():
         fig_routes.update_layout(height=400)
         st.plotly_chart(fig_routes, use_container_width=True)
     
-    # Time-based analysis
-    if 'timestamp' in data.columns:
-        st.subheader("⏰ Flight Activity Over Time")
-        
-        # Convert timestamp to datetime if it's not already
-        if not pd.api.types.is_datetime64_any_dtype(data['timestamp']):
-            data['timestamp'] = pd.to_datetime(data['timestamp'])
-        
-        # Group by hour
-        data['hour'] = data['timestamp'].dt.hour
-        hourly_counts = data.groupby('hour').size().reset_index(name='flight_count')
-        
-        fig_time = px.line(
-            hourly_counts,
-            x='hour',
-            y='flight_count',
-            title="Flight Activity by Hour of Day",
-            labels={'hour': 'Hour of Day', 'flight_count': 'Number of Flights'}
-        )
-        fig_time.update_layout(height=300)
-        st.plotly_chart(fig_time, use_container_width=True)
+    # Side-by-side charts for better space utilization
+    chart_col1, chart_col2 = st.columns([1, 1])
     
-    # Geographic distribution
-    if 'origin_country' in data.columns:
-        st.subheader("🌍 Geographic Distribution")
-        
-        country_counts = data['origin_country'].value_counts().head(10)
-        
-        fig_geo = px.pie(
-            values=country_counts.values,
-            names=country_counts.index,
-            title="Flights by Origin Country"
-        )
-        fig_geo.update_layout(height=400)
-        st.plotly_chart(fig_geo, use_container_width=True)
+    with chart_col1:
+        # Time-based analysis
+        if 'timestamp' in data.columns:
+            st.subheader("⏰ Flight Activity Over Time")
+            
+            # Convert timestamp to datetime if it's not already
+            if not pd.api.types.is_datetime64_any_dtype(data['timestamp']):
+                data['timestamp'] = pd.to_datetime(data['timestamp'])
+            
+            # Group by hour
+            data['hour'] = data['timestamp'].dt.hour
+            hourly_counts = data.groupby('hour').size().reset_index(name='flight_count')
+            
+            fig_time = px.line(
+                hourly_counts,
+                x='hour',
+                y='flight_count',
+                title="Flight Activity by Hour of Day",
+                labels={'hour': 'Hour of Day', 'flight_count': 'Number of Flights'}
+            )
+            fig_time.update_layout(height=350)
+            st.plotly_chart(fig_time, use_container_width=True)
+    
+    with chart_col2:
+        # Geographic distribution
+        if 'origin_country' in data.columns:
+            st.subheader("🌍 Geographic Distribution")
+            
+            country_counts = data['origin_country'].value_counts().head(10)
+            
+            fig_geo = px.pie(
+                values=country_counts.values,
+                names=country_counts.index,
+                title="Flights by Origin Country"
+            )
+            fig_geo.update_layout(height=350)
+            st.plotly_chart(fig_geo, use_container_width=True)
     
     # Airline distribution
     if 'airline' in data.columns:
@@ -549,46 +583,51 @@ def display_ai_insights():
     
     results = st.session_state.analysis_results
     
-    # Market trends with enhanced styling
-    if 'market_trends' in results:
-        st.markdown("""
-        <div class="insight-box">
-            <h4>📈 Market Trends</h4>
-        </div>
-        """, unsafe_allow_html=True)
-        st.write(results['market_trends'])
+    # Create a two-column layout for better space utilization
+    col1, col2 = st.columns([1, 1])
     
-    # Popular routes insights
-    if 'popular_routes' in results:
-        st.markdown("""
-        <div class="insight-box">
-            <h4>🎯 Route Insights</h4>
-        </div>
-        """, unsafe_allow_html=True)
-        st.write(results['popular_routes'])
+    with col1:
+        # Market trends with enhanced styling
+        if 'market_trends' in results:
+            st.markdown("""
+            <div class="insight-box">
+                <h4>📈 Market Trends</h4>
+            </div>
+            """, unsafe_allow_html=True)
+            st.write(results['market_trends'])
+        
+        # Demand patterns
+        if 'demand_patterns' in results:
+            st.markdown("""
+            <div class="insight-box">
+                <h4>⚡ Demand Patterns</h4>
+            </div>
+            """, unsafe_allow_html=True)
+            st.write(results['demand_patterns'])
     
-    # Demand patterns
-    if 'demand_patterns' in results:
-        st.markdown("""
-        <div class="insight-box">
-            <h4>⚡ Demand Patterns</h4>
-        </div>
-        """, unsafe_allow_html=True)
-        st.write(results['demand_patterns'])
+    with col2:
+        # Popular routes insights
+        if 'popular_routes' in results:
+            st.markdown("""
+            <div class="insight-box">
+                <h4>🎯 Route Insights</h4>
+            </div>
+            """, unsafe_allow_html=True)
+            st.write(results['popular_routes'])
+        
+        # Peak hours analysis
+        if 'peak_hours' in results:
+            st.markdown("""
+            <div class="insight-box">
+                <h4>⏰ Peak Hours Analysis</h4>
+            </div>
+            """, unsafe_allow_html=True)
+            st.write(results['peak_hours'])
     
-    # Peak hours analysis
-    if 'peak_hours' in results:
-        st.markdown("""
-        <div class="insight-box">
-            <h4>⏰ Peak Hours Analysis</h4>
-        </div>
-        """, unsafe_allow_html=True)
-        st.write(results['peak_hours'])
-    
-    # Recommendations with special styling
+    # Recommendations span full width for better visibility
     if 'recommendations' in results:
         st.markdown("""
-        <div class="insight-box" style="border-left: 4px solid #28a745;">
+        <div class="insight-box" style="border-left: 4px solid #28a745; margin-top: 1rem;">
             <h4>💡 Business Recommendations</h4>
         </div>
         """, unsafe_allow_html=True)

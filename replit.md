@@ -91,6 +91,8 @@ Changelog:
 - July 03, 2025. Initial setup
 - July 03, 2025. Fixed time period analysis bug showing minutes instead of days
 - July 03, 2025. Made OpenSky Network the default data source due to AviationStack limitations
+- July 03, 2025. Fixed session state AttributeError for guest mode access
+- July 03, 2025. Improved layout to better utilize horizontal space and reduce empty areas
 ```
 
 ## User Preferences
