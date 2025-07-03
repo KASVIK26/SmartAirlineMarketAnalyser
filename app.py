@@ -519,8 +519,11 @@ def display_visualizations():
         fig_routes.update_layout(height=400)
         st.plotly_chart(fig_routes, use_container_width=True)
     
-    # Side-by-side charts for better space utilization
-    chart_col1, chart_col2 = st.columns([1, 1])
+    # Add spacing between sections
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Side-by-side charts with better spacing to prevent overlap
+    chart_col1, chart_col2 = st.columns([1, 1], gap="large")
     
     with chart_col1:
         # Time-based analysis
@@ -542,7 +545,10 @@ def display_visualizations():
                 title="Flight Activity by Hour of Day",
                 labels={'hour': 'Hour of Day', 'flight_count': 'Number of Flights'}
             )
-            fig_time.update_layout(height=350)
+            fig_time.update_layout(
+                height=400,
+                margin=dict(l=20, r=20, t=40, b=20)
+            )
             st.plotly_chart(fig_time, use_container_width=True)
     
     with chart_col2:
@@ -550,15 +556,30 @@ def display_visualizations():
         if 'origin_country' in data.columns:
             st.subheader("🌍 Geographic Distribution")
             
-            country_counts = data['origin_country'].value_counts().head(10)
+            country_counts = data['origin_country'].value_counts().head(8)  # Reduced to 8 for better display
             
             fig_geo = px.pie(
                 values=country_counts.values,
                 names=country_counts.index,
                 title="Flights by Origin Country"
             )
-            fig_geo.update_layout(height=350)
+            fig_geo.update_layout(
+                height=400,
+                margin=dict(l=20, r=80, t=40, b=20),
+                legend=dict(
+                    orientation="v",
+                    yanchor="top",
+                    y=0.9,
+                    xanchor="left",
+                    x=1.02,
+                    font=dict(size=10)
+                ),
+                showlegend=True
+            )
             st.plotly_chart(fig_geo, use_container_width=True)
+    
+    # Add spacing between sections
+    st.markdown("<br>", unsafe_allow_html=True)
     
     # Airline distribution
     if 'airline' in data.columns:
