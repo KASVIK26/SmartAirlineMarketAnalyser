@@ -27,6 +27,16 @@ if 'analysis_results' not in st.session_state:
     st.session_state.analysis_results = None
 
 def main():
+    # Ensure session state is initialized
+    if 'data_fetcher' not in st.session_state:
+        st.session_state.data_fetcher = DataFetcher()
+    if 'ai_analyzer' not in st.session_state:
+        st.session_state.ai_analyzer = AIAnalyzer()
+    if 'flight_data' not in st.session_state:
+        st.session_state.flight_data = None
+    if 'analysis_results' not in st.session_state:
+        st.session_state.analysis_results = None
+    
     # Custom CSS for better UI
     st.markdown("""
     <style>
@@ -210,7 +220,7 @@ def main():
         )
     
     # Main content area with enhanced layout
-    if st.session_state.flight_data is not None:
+    if hasattr(st.session_state, 'flight_data') and st.session_state.flight_data is not None:
         # Data overview section
         st.subheader("📊 Market Demand Overview")
         display_data_overview()
@@ -224,7 +234,7 @@ def main():
         
         with col2:
             st.subheader("🤖 AI Insights")
-            if st.session_state.analysis_results is not None:
+            if hasattr(st.session_state, 'analysis_results') and st.session_state.analysis_results is not None:
                 display_ai_insights()
             else:
                 st.info("AI insights will appear here after data analysis.")
@@ -298,7 +308,7 @@ def main():
         """)
             
     # Bottom section for detailed data
-    if st.session_state.flight_data is not None:
+    if hasattr(st.session_state, 'flight_data') and st.session_state.flight_data is not None:
         st.markdown("---")
         st.subheader("📋 Detailed Flight Data")
         
@@ -398,7 +408,7 @@ def fetch_and_analyze_data(data_source, country, airport_code, time_range, analy
 def display_data_overview():
     """Display overview statistics of the flight data"""
     
-    if st.session_state.flight_data is None or st.session_state.flight_data.empty:
+    if not hasattr(st.session_state, 'flight_data') or st.session_state.flight_data is None or st.session_state.flight_data.empty:
         return
     
     data = st.session_state.flight_data
@@ -457,7 +467,7 @@ def display_data_overview():
 def display_visualizations():
     """Display interactive visualizations"""
     
-    if st.session_state.flight_data is None or st.session_state.flight_data.empty:
+    if not hasattr(st.session_state, 'flight_data') or st.session_state.flight_data is None or st.session_state.flight_data.empty:
         return
     
     data = st.session_state.flight_data
@@ -534,7 +544,7 @@ def display_visualizations():
 def display_ai_insights():
     """Display AI-generated insights"""
     
-    if st.session_state.analysis_results is None:
+    if not hasattr(st.session_state, 'analysis_results') or st.session_state.analysis_results is None:
         return
     
     results = st.session_state.analysis_results
