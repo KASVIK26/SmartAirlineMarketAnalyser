@@ -9,8 +9,11 @@ from data_fetcher import DataFetcher
 from ai_analyzer import AIAnalyzer
 from utils import format_currency, cache_data, get_country_code, validate_api_keys
 
-# Load environment variables from .env file
-load_dotenv()
+# Load environment variables from .env file (for local development)
+try:
+    load_dotenv()
+except Exception:
+    pass  # Ignore if dotenv fails (e.g., in cloud environment)
 
 # Configure page
 st.set_page_config(
