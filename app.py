@@ -86,16 +86,13 @@ def main():
         
         col1, col2 = st.columns(2)
         with col1:
-            if api_status.get("OpenAI"):
-                st.markdown('<span class="status-indicator status-online"></span>OpenAI API', unsafe_allow_html=True)
+            if api_status.get("Gemini"):
+                st.markdown('<span class="status-indicator status-online"></span>Gemini AI', unsafe_allow_html=True)
             else:
-                st.markdown('<span class="status-indicator status-offline"></span>OpenAI API', unsafe_allow_html=True)
+                st.markdown('<span class="status-indicator status-offline"></span>Gemini AI', unsafe_allow_html=True)
         
         with col2:
-            if api_status.get("Gemini"):
-                st.markdown('<span class="status-indicator status-online"></span>Gemini API', unsafe_allow_html=True)
-            else:
-                st.markdown('<span class="status-indicator status-offline"></span>Gemini API', unsafe_allow_html=True)
+            st.markdown('<span class="status-indicator status-online"></span>OpenSky API', unsafe_allow_html=True)
         
         st.markdown("---")
         
@@ -180,7 +177,7 @@ def main():
             "**Free Data Sources:**\n"
             "• OpenSky Network: Real-time global flight data\n"
             "• AviationStack: Commercial flight schedules\n\n"
-            "**AI Analysis provides:**\n"
+            "**Gemini AI Analysis provides:**\n"
             "• Market trend insights\n"
             "• Route popularity analysis\n"
             "• Business recommendations"
@@ -591,7 +588,7 @@ def display_ai_insights():
         <h4>🏨 Airline Market Demand Analytics</h4>
         <p>Helping hostel businesses make data-driven decisions through aviation market analysis</p>
         <p style="color: #666; font-size: 0.9em;">
-            Data Sources: OpenSky Network • AviationStack | AI Analysis: OpenAI GPT-4o • Google Gemini
+            Data Sources: OpenSky Network • AviationStack | AI Analysis: Google Gemini
         </p>
     </div>
     """, unsafe_allow_html=True)

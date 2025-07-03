@@ -3,18 +3,19 @@ import os
 import pandas as pd
 from typing import Dict, List, Optional, Any
 import streamlit as st
-from openai import OpenAI
+from google import genai
+from google.genai import types
 
 class AIAnalyzer:
-    """Handles AI-powered analysis of flight data using OpenAI GPT-4o"""
+    """Handles AI-powered analysis of flight data using Google Gemini"""
     
     def __init__(self):
-        self.openai_api_key = os.environ.get("OPENAI_API_KEY", "")
-        if self.openai_api_key:
-            self.client = OpenAI(api_key=self.openai_api_key)
+        self.gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
+        if self.gemini_api_key:
+            self.client = genai.Client(api_key=self.gemini_api_key)
         else:
             self.client = None
-            st.warning("OpenAI API key not found. AI analysis features will be limited.")
+            st.warning("Gemini API key not found. AI analysis features will be limited.")
     
     def analyze_flight_data(self, df: pd.DataFrame, analysis_types: List[str]) -> Dict[str, Any]:
         """
@@ -122,19 +123,12 @@ class AIAnalyzer:
             Keep the analysis concise and actionable for a hostel business looking to understand travel patterns.
             """
             
-            # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-            # do not change this unless explicitly requested by the user
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are an aviation market analyst specializing in travel demand patterns."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=500,
-                temperature=0.7
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
             )
             
-            return response.choices[0].message.content
+            return response.text or "No analysis generated"
             
         except Exception as e:
             return f"Error analyzing route popularity: {str(e)}"
@@ -163,19 +157,12 @@ class AIAnalyzer:
             Focus on actionable insights for hospitality businesses.
             """
             
-            # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-            # do not change this unless explicitly requested by the user
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are a travel demand forecasting expert."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=500,
-                temperature=0.7
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
             )
             
-            return response.choices[0].message.content
+            return response.text or "No analysis generated"
             
         except Exception as e:
             return f"Error analyzing demand trends: {str(e)}"
@@ -205,19 +192,12 @@ class AIAnalyzer:
             Be specific about timing and provide actionable recommendations.
             """
             
-            # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-            # do not change this unless explicitly requested by the user
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are a business operations analyst specializing in hospitality."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=400,
-                temperature=0.7
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
             )
             
-            return response.choices[0].message.content
+            return response.text or "No analysis generated"
             
         except Exception as e:
             return f"Error analyzing peak hours: {str(e)}"
@@ -254,19 +234,12 @@ class AIAnalyzer:
             Make it relevant for a hostel chain looking to understand travel patterns.
             """
             
-            # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-            # do not change this unless explicitly requested by the user
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are a senior aviation market analyst with expertise in hospitality industry applications."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=600,
-                temperature=0.7
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
             )
             
-            return response.choices[0].message.content
+            return response.text or "No analysis generated"
             
         except Exception as e:
             return f"Error generating market trends: {str(e)}"
@@ -295,19 +268,12 @@ class AIAnalyzer:
             Make recommendations specific and actionable.
             """
             
-            # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-            # do not change this unless explicitly requested by the user
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are a hospitality business consultant specializing in data-driven strategy."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=500,
-                temperature=0.7
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
             )
             
-            return response.choices[0].message.content
+            return response.text or "No recommendations generated"
             
         except Exception as e:
             return f"Error generating recommendations: {str(e)}"

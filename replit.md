@@ -57,17 +57,17 @@ The application follows a modular architecture with clear separation of concerns
 ### APIs
 - **OpenSky Network**: Free aviation data API (no authentication required)
 - **AviationStack**: Premium aviation data API (requires API key)
-- **OpenAI GPT-4o**: AI-powered data analysis (requires API key)
+- **Google Gemini**: AI-powered data analysis (requires API key)
 
 ### Python Libraries
 - **Streamlit**: Web application framework
 - **Pandas**: Data manipulation and analysis
 - **Plotly**: Interactive data visualization
 - **Requests**: HTTP client for API calls
-- **OpenAI**: Official OpenAI Python client
+- **Google GenAI**: Official Google Gemini Python client
 
 ### Environment Variables
-- `OPENAI_API_KEY`: Required for AI analysis features
+- `GEMINI_API_KEY`: Required for AI analysis features
 - `AVIATIONSTACK_API_KEY`: Required for AviationStack data source
 
 ## Deployment Strategy
