@@ -4,17 +4,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import time
-
-# Load environment variables from .env file (for local development)
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    # dotenv not available in cloud environment, use streamlit secrets instead
-    pass
-except Exception:
-    pass  # Ignore if dotenv fails
-
 from data_fetcher import DataFetcher
 from ai_analyzer import AIAnalyzer
 from utils import format_currency, cache_data, get_country_code, validate_api_keys

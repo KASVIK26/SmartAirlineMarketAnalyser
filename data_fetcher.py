@@ -13,12 +13,7 @@ class DataFetcher:
     def __init__(self):
         self.opensky_base_url = "https://opensky-network.org/api"
         self.aviationstack_base_url = "http://api.aviationstack.com/v1"
-        
-        # Try to get API key from Streamlit secrets first, then environment variables
-        if hasattr(st, 'secrets') and 'AVIATIONSTACK_API_KEY' in st.secrets:
-            self.aviationstack_api_key = st.secrets["AVIATIONSTACK_API_KEY"]
-        else:
-            self.aviationstack_api_key = os.environ.get("AVIATIONSTACK_API_KEY", "")
+        self.aviationstack_api_key = os.environ.get("AVIATIONSTACK_API_KEY", "")
         
         # Cache settings
         self.cache_duration = 300  # 5 minutes

@@ -67,18 +67,11 @@ def get_country_code(country_name: str) -> str:
 def validate_api_keys() -> Dict[str, bool]:
     """Validate that required API keys are available"""
     import os
-    import streamlit as st
-    
-    def check_key(key_name: str) -> bool:
-        """Check if API key exists in secrets or environment"""
-        if hasattr(st, 'secrets') and key_name in st.secrets:
-            return bool(st.secrets[key_name])
-        return bool(os.environ.get(key_name))
     
     keys_status = {
-        "OpenAI": check_key("OPENAI_API_KEY"),
-        "AviationStack": check_key("AVIATIONSTACK_API_KEY"),
-        "Gemini": check_key("GEMINI_API_KEY")
+        "OpenAI": bool(os.environ.get("OPENAI_API_KEY")),
+        "AviationStack": bool(os.environ.get("AVIATIONSTACK_API_KEY")),
+        "Gemini": bool(os.environ.get("GEMINI_API_KEY"))
     }
     
     return keys_status
